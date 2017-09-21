@@ -1,11 +1,12 @@
 FROM python:3.6-alpine3.6
 LABEL maintainer="Luke Childs <lukechilds123@gmail.com>"
 
+COPY ./bin /usr/local/bin
 COPY ./VERSION /tmp
 
 RUN VERSION=$(cat /tmp/VERSION) && \
     chmod a+x /usr/local/bin/* && \
-    apk add --no-cache git build-base && \
+    apk add --no-cache git build-base openssl && \
     apk add --no-cache --repository http://nl.alpinelinux.org/alpine/edge/testing leveldb-dev && \
     pip install aiohttp pylru plyvel && \
     git clone https://github.com/lukechilds/electrumx.git && \
@@ -19,9 +20,12 @@ ENV HOME /data
 ENV ALLOW_ROOT 1
 ENV DB_DIRECTORY /data
 ENV TCP_PORT=5001
+ENV SSL_PORT=5002
+ENV SSL_CERTFILE ${DB_DIRECTORY}/electrumx.crt
+ENV SSL_KEYFILE ${DB_DIRECTORY}/electrumx.key
 ENV HOST ""
 WORKDIR /data
 
 EXPOSE 50001 50002
 
-CMD ["/electrumx/electrumx_server.py"]
+CMD ["init"]
