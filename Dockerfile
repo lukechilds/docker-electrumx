@@ -15,16 +15,17 @@ RUN VERSION=$(cat /tmp/VERSION) && \
     apk del git build-base && \
     rm -rf /tmp/*
 
-VOLUME ["/data"]
-ENV HOME /data
-ENV ALLOW_ROOT 1
-ENV DB_DIRECTORY /data
+RUN adduser -D -u 3002 electrumx && \ 
+    mkdir /home/electrumx/data && \
+    chown electrumx:electrumx /home/electrumx/data 
+
 ENV TCP_PORT=50001
 ENV SSL_PORT=50002
+ENV DB_DIRECTORY /home/electrumx/data
 ENV SSL_CERTFILE ${DB_DIRECTORY}/electrumx.crt
 ENV SSL_KEYFILE ${DB_DIRECTORY}/electrumx.key
 ENV HOST ""
-WORKDIR /data
+USER electrumx
 
 EXPOSE 50001 50002
 
