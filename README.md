@@ -25,6 +25,8 @@ If there's an SSL certificate/key (`electrumx.crt`/`electrumx.key`) in the `/dat
 
 You can view all ElectrumX environment variables here: https://github.com/kyuupichan/electrumx/blob/master/docs/environment.rst
 
+The envrironment variable `COIN` defaults to `BitcoinSegwit`, so it is not required to specify it unless you want to use this for some other ShitCoin. Values can be found here: `https://github.com/kyuupichan/electrumx/blob/master/electrumx/lib/coins.py`.
+
 ### TCP Port
 
 By default only the SSL port is exposed. You can expose the unencrypted TCP port with `-p 50001:50001`, although this is strongly discouraged.
@@ -37,7 +39,6 @@ You can also run a specific version of ElectrumX if you want.
 docker run \
   -v /home/username/electrumx:/data \
   -e DAEMON_URL=http://user:pass@host:port \
-  -e COIN=BitcoinSegwit \
   -p 50002:50002 \
   lukechilds/electrumx:v1.8.7
 ```
