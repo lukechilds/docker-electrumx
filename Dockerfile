@@ -7,7 +7,7 @@ COPY ./VERSION /tmp
 RUN VERSION=$(cat /tmp/VERSION) && \
     chmod a+x /usr/local/bin/* && \
     apk add --no-cache git build-base openssl && \
-    apk add --no-cache --repository http://nl.alpinelinux.org/alpine/edge/testing leveldb-dev && \
+    apk add --no-cache --repository http://nl.alpinelinux.org/alpine/edge/community leveldb-dev && \
     pip install aiohttp pylru plyvel && \
     git clone -b $VERSION https://github.com/kyuupichan/electrumx.git && \
     cd electrumx && \
