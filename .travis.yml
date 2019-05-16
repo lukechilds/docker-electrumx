@@ -1,7 +1,7 @@
 sudo: required
 services:
   - docker
-script: docker build -t electrumx . && ( docker run electrumx cat /electrumx/electrumx/__init__.py | tee /dev/stderr | grep -q "'ElectrumX $(cat VERSION)'" ) 2>&1
+script: docker build -t electrumx .
 notifications:
   email:
     on_success: never
