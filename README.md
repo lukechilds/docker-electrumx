@@ -29,6 +29,10 @@ You can view all ElectrumX environment variables here: https://github.com/kyuupi
 
 By default only the SSL port is exposed. You can expose the unencrypted TCP port with `-p 50001:50001`, although this is strongly discouraged.
 
+### WebSocket Port
+
+You can expose the WebSocket port with `-p 50004:50004`.
+
 ### Version
 
 You can also run a specific version of ElectrumX if you want.
