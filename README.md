@@ -33,6 +33,12 @@ By default only the SSL port is exposed. You can expose the unencrypted TCP port
 
 You can expose the WebSocket port with `-p 50004:50004`.
 
+### RPC Port
+
+To access RPC from your host machine, you'll also need to expose port 8000. You probably only want this available to localhost: `-p 127.0.0.1:8000:8000`.
+
+If you're only accessing RPC from within the container, there's no need to expose the RPC port.
+
 ### Version
 
 You can also run a specific version of ElectrumX if you want.
