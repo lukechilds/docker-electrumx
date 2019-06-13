@@ -27,7 +27,7 @@ You can view all ElectrumX environment variables here: https://github.com/kyuupi
 
 ### RocksDB
 
-You can use RocksDB as the database engine instead of the default LevelDB, by adding `-e DB_ENGINE=rocksdb` to your docker run. RocksDB should perform slightly better and use a little less disk space, but has to rebuild the databse.
+You can use RocksDB as the database engine instead of the default LevelDB by adding `-e DB_ENGINE=rocksdb` to your docker run. RocksDB should perform slightly better and use a little less disk space, but has to rebuild the databse.
 
 ### TCP Port
 
