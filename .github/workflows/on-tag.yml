@@ -2,6 +2,8 @@ name: Build & deploy ElectrumX
 
 on:
   push:
+    branches:
+      - master
     tags:
       - '*'
 
@@ -46,18 +48,15 @@ jobs:
           if [[ "${CPU}" == "arm64" ]]; then
             CPU="arm64v8"
           fi
-          sed -i ${DIR}/Dockerfile \
+          sed -i Dockerfile \
             -e "s|^FROM alpine|FROM $CPU/alpine|g"
       - name: Build ElectrumX
-        run: >
-          docker build  ${DIR}/
-          --build-arg "VERSION=${VERSION}"
-          --tag       electrumx
+        run: docker build . --build-arg "VERSION=${VERSION}" --tag electrumx
       - name: Print OS info
         run: docker run --rm  --entrypoint=uname  electrumx  -a
 
       - name: Print ElectrumX version
-        run: docker run --rm  electrumx  --version
+        run: docker run --rm electrumx echo $SERVER_SUBVERSION
 
       - name: Save built image into a .tgz file
         run: |
@@ -96,7 +95,7 @@ jobs:
       - name: Login to Docker Hub
         run: |
           echo "Logging in as ${DOCKER_USER}…"
-          echo "${{secrets.DOCKER_TOKEN}}" | docker login -u="${DOCKER_USER}" --password-stdin
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u="${DOCKER_USER}" --password-stdin
       - name: Download all build artifacts
         uses: actions/download-artifact@v1.0.0
         with:
@@ -137,7 +136,8 @@ jobs:
         uses: meeDamian/sync-readme@v1.0.5
         with:
           pass: ${{secrets.DOCKER_TOKEN}}
-          description: true
+          slug: ndeet/electrumx-workflow
+          description: Run an Electrum server with one command
 
       - name: Upload images to Github Release
         uses: meeDamian/github-release@v1.0.1
