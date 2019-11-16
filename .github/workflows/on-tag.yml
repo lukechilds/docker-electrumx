@@ -1,0 +1,147 @@
+name: Build & deploy ElectrumX
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Build ElectrumX
+    runs-on: ubuntu-18.04
+
+    # NOTE: qemu v3.1.1 used instead of currently newest v4.1.0, because v4 is **much** slower for aarch64, see:
+    #   https://github.com/meeDamian/docker-berkeleydb/commit/9e87d11314c2522726497f0c6059e61a31298e7f/checks
+    env:
+      QEMU_VERSION: v3.1.1
+      DOCKER_BUILDKIT: 1
+
+    strategy:
+      matrix:
+        arch:
+          - arm32v7
+          - arm64
+          - amd64
+
+    steps:
+      - uses: actions/checkout@v1.0.0
+
+      - name: Setup environment
+        run: |
+          VERSION="$(echo "${GITHUB_REF}" | awk -F/ '{print $NF}' | tr -d v)"
+          echo ::set-env name=VERSION::"${VERSION}"
+          echo ::set-env name=DIR::"$(echo "${VERSION}" | cut -d. -f-2)"
+      - name: Register self-compiled qemu
+        if: matrix.arch != 'amd64'
+        run: docker run --rm --privileged "meedamian/simple-qemu:${QEMU_VERSION}-${{matrix.arch}}" -p yes
+
+      # Alter `Dockerfile` to reference used architecture/image combos explicitly.  Places changed are:
+      #   * all `FROM` statements (ex. `FROM alpine…` -> `FROM arm64v8/alpine…`)
+      # `sed` `--expression`s change it in the following way:
+      #   Matches all occurrences of `FROM alpine`, and injects arch prefix before `alpine`, ex: `arm64v8/alpine`
+      - name: Change Dockerfile to use arch-specific base images
+        if: matrix.arch != 'amd64'
+        run: |
+          CPU="${{matrix.arch}}"
+          if [[ "${CPU}" == "arm64" ]]; then
+            CPU="arm64v8"
+          fi
+          sed -i ${DIR}/Dockerfile \
+            -e "s|^FROM alpine|FROM $CPU/alpine|g"
+      - name: Build ElectrumX
+        run: >
+          docker build  ${DIR}/
+          --build-arg "VERSION=${VERSION}"
+          --tag       electrumx
+      - name: Print OS info
+        run: docker run --rm  --entrypoint=uname  electrumx  -a
+
+      - name: Print ElectrumX version
+        run: docker run --rm  electrumx  --version
+
+      - name: Save built image into a .tgz file
+        run: |
+          mkdir -p images/
+          docker tag  electrumx  "electrumx:${{matrix.arch}}"
+          docker save "electrumx:${{matrix.arch}}" | gzip > "images/electrumx-${{matrix.arch}}.tgz"
+      - name: Print sha256sum of built image
+        run: sha256sum images/*
+
+      - name: Upload built image
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: images
+          path: images/
+
+
+  docker-hub-push:
+    name: Tag & deploy to Docker Hub. Only after successful build and on a git-tag push
+
+    runs-on: ubuntu-18.04
+    needs: build
+    steps:
+      - uses: actions/checkout@v1.0.0
+
+      - name: Setup environment
+        run: |
+          echo ::set-env name=DOCKER_USER::"${GITHUB_ACTOR,,}"
+          echo ::set-env name=SLUG::"$(echo ${GITHUB_REPOSITORY,,} | sed 's/docker-//')"
+          echo ::set-env name=VERSION::"$(echo "${GITHUB_REF}" | awk -F/ '{print $NF}')"
+      - name: Enable manifests
+        run: |
+          mkdir -p ~/.docker
+          echo '{ "experimental": "enabled" }' > ~/.docker/config.json
+          sudo systemctl restart docker
+          docker version
+      - name: Login to Docker Hub
+        run: |
+          echo "Logging in as ${DOCKER_USER}…"
+          echo "${{secrets.DOCKER_TOKEN}}" | docker login -u="${DOCKER_USER}" --password-stdin
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v1.0.0
+        with:
+          name: images
+
+      - name: Print sha256sum of all images
+        run: sha256sum images/*
+
+      - name: Load images locally
+        run: ls images/ | xargs -I %  docker load -i "images/%"
+
+      # No short tags.  IMO electrumx version should always be specified exactly, and explicitly.
+      - name: Version-tag all images
+        run: docker images electrumx --format "{{.Tag}}" | xargs -I %  docker tag  "electrumx:%"  "${SLUG}:${VERSION}-%"
+
+      - name: List all tagged images
+        run: docker images "${SLUG}"
+
+      - name: Push all images
+        run: docker images "${SLUG}" --format "{{.Repository}}:{{.Tag}}" | xargs -I %  docker push %
+
+      - name: Create manifest
+        run: >
+          docker -D manifest create  "${SLUG}:${VERSION}"  \
+            "${SLUG}:${VERSION}-amd64" \
+            "${SLUG}:${VERSION}-arm64" \
+            "${SLUG}:${VERSION}-arm32v7"
+      - name: Annotate arm32v7
+        run: docker manifest annotate "${SLUG}:${VERSION}" "${SLUG}:${VERSION}-arm32v7" --os linux --arch arm   --variant v7
+
+      - name: Annotate arm64v8
+        run: docker manifest annotate "${SLUG}:${VERSION}" "${SLUG}:${VERSION}-arm64"   --os linux --arch arm64 --variant v8
+
+      - name: Push manifest
+        run: docker manifest push "${SLUG}:${VERSION}"
+
+      - name: Sync README.md and Description to Docker Hub
+        uses: meeDamian/sync-readme@v1.0.5
+        with:
+          pass: ${{secrets.DOCKER_TOKEN}}
+          description: true
+
+      - name: Upload images to Github Release
+        uses: meeDamian/github-release@v1.0.1
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}
+          gzip: false
+          files: images/*
