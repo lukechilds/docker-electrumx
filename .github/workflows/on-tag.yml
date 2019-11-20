@@ -136,7 +136,8 @@ jobs:
         uses: meeDamian/sync-readme@v1.0.5
         with:
           pass: ${{secrets.DOCKER_TOKEN}}
-          slug: ndeet/electrumx-workflow
+          slug: lukechilds/electrumx
+          # currently hardcoded description as fetching from GH fails
           description: Run an Electrum server with one command
 
       - name: Upload images to Github Release
