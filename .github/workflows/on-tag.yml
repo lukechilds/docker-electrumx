@@ -2,8 +2,6 @@ name: Build & deploy ElectrumX
 
 on:
   push:
-    branches:
-      - master
     tags:
       - '*'
 
