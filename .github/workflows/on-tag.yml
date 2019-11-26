@@ -47,7 +47,7 @@ jobs:
             CPU="arm64v8"
           fi
           sed -i Dockerfile \
-            -e "s|^FROM alpine|FROM $CPU/alpine|g"
+            -e "s|^FROM \(.*\)|FROM $CPU/\1|g"
       - name: Build ElectrumX
         run: docker build . --build-arg "VERSION=${VERSION}" --tag electrumx
       - name: Print OS info
