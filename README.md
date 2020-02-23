@@ -17,6 +17,7 @@ docker run \
   -v /home/username/electrumx:/data \
   -e DAEMON_URL=http://user:pass@host:port \
   -e COIN=BitcoinSegwit \
+  -e SSL_HOST=mydomain.com \
   -p 50002:50002 \
   lukechilds/electrumx
 ```
