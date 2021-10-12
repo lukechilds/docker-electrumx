@@ -1,11 +1,13 @@
+ARG VERSION=1.16.0
+
 FROM python:3.7-alpine3.11
 LABEL maintainer="Luke Childs <lukechilds123@gmail.com>"
 
-COPY ./bin /usr/local/bin
-COPY ./VERSION /tmp
+ARG VERSION
 
-RUN VERSION=$(cat /tmp/VERSION) && \
-    chmod a+x /usr/local/bin/* && \
+COPY ./bin /usr/local/bin
+
+RUN chmod a+x /usr/local/bin/* && \
     apk add --no-cache git build-base openssl && \
     apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.11/main leveldb-dev && \
     apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing rocksdb-dev && \
