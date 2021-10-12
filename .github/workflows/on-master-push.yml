@@ -2,8 +2,8 @@ name: Build on master push
 
 on:
   push:
-    # branches:
-    #   - master
+    branches:
+      - master
 
 env:
   DOCKER_CLI_EXPERIMENTAL: enabled
@@ -16,7 +16,7 @@ jobs:
       VERSION: 1.16.0
     steps:
       - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USER }}" --password-stdin
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u lukechilds --password-stdin
 
       - name: Checkout project
         uses: actions/checkout@v2
@@ -34,6 +34,6 @@ jobs:
           docker buildx build \
           --platform linux/amd64,linux/arm64 \
           --build-arg VERSION=$VERSION \
-          --tag ${{ secrets.DOCKER_HUB_USER }}/electrs:v$VERSION \
-          --tag ${{ secrets.DOCKER_HUB_USER }}/electrs:latest \
+          --tag lukechilds/electrumx:v$VERSION \
+          --tag lukechilds/electrumx:latest \
           --output "type=registry" .
