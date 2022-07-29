@@ -1,6 +1,6 @@
 ARG VERSION=1.16.0
 
-FROM python:3.7-alpine3.11
+FROM python:3.10.5-alpine3.16
 LABEL maintainer="Luke Childs <lukechilds123@gmail.com>"
 
 ARG VERSION
@@ -9,9 +9,13 @@ COPY ./bin /usr/local/bin
 
 RUN chmod a+x /usr/local/bin/* && \
     apk add --no-cache git build-base openssl && \
-    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.11/main leveldb-dev && \
+    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.16/main leveldb-dev && \
+    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.16/main cython && \
     apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing rocksdb-dev && \
-    pip install aiohttp pylru plyvel websockets python-rocksdb uvloop && \
+    pip install aiohttp pylru plyvel websockets python-rocksdb uvloop pkgconfig Cython && \
+    git clone https://github.com/HathorNetwork/python-rocksdb.git && \
+    cd python-rocksdb && \
+    python setup.py install && \
     git clone -b $VERSION https://github.com/spesmilo/electrumx.git && \
     cd electrumx && \
     python setup.py install && \
