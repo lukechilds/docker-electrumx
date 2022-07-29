@@ -16,6 +16,7 @@ RUN chmod a+x /usr/local/bin/* && \
     git clone https://github.com/HathorNetwork/python-rocksdb.git && \
     cd python-rocksdb && \
     python setup.py install && \
+    cd / && \
     git clone -b $VERSION https://github.com/spesmilo/electrumx.git && \
     cd electrumx && \
     python setup.py install && \
