@@ -1,7 +1,16 @@
 #!/bin/sh
 
+SUBJ="/O=ElectrumX"
+
 if [ ! -e "${SSL_CERTFILE}" ] || [ ! -e "${SSL_KEYFILE}" ]; then
-  openssl req -newkey rsa:2048 -sha256 -nodes -x509 -days 365 -subj "/O=ElectrumX" -keyout "${SSL_KEYFILE}" -out "${SSL_CERTFILE}"
+  openssl req -newkey rsa:2048 -sha256 -nodes -x509 -days 365 -subj "${SUBJ}" -keyout "${SSL_KEYFILE}" -out "${SSL_CERTFILE}"
+else
+  rawdate="`echo | openssl x509 -in "${SSL_CERTFILE}" -noout -enddate 2>/dev/null|cut -d= -f2`"
+  exp="$(date -d "$rawdate" "+%s")"
+  now="$(date "+%s")"
+  if [ $now -gt $exp ]; then
+    openssl req -key "${SSL_KEYFILE}" -sha256 -nodes -x509 -days 365 -subj "${SUBJ}" -out "${SSL_CERTFILE}"
+  fi
 fi
 
 exec /electrumx/electrumx_server
