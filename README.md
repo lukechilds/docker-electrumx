@@ -53,6 +53,23 @@ docker run \
   lukechilds/electrumx:v1.8.7
 ```
 
+## Build
+
+Define the spesmilo electrumx target branch
+
+`Default branch: master`
+
+```
+export VERSION=master
+```
+
+Get the build
+```
+docker build . \
+  -t lukechilds/electrumx:${VERSION}
+  --build-args VERSION=${VERSION}
+```
+
 ## License
 
 MIT © Luke Childs
