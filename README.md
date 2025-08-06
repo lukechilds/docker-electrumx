@@ -1,15 +1,9 @@
 
-# docker-electrumx
+# docker-electrumx-bgl
 
-[![Build Status](https://travis-ci.org/lukechilds/docker-electrumx.svg?branch=master)](https://travis-ci.org/lukechilds/docker-electrumx)
-[![Docker Pulls](https://img.shields.io/docker/pulls/lukechilds/electrumx.svg)](https://hub.docker.com/r/lukechilds/electrumx/)
-[![GitHub Donate](https://badgen.net/badge/GitHub/Sponsor/D959A7?icon=github)](https://github.com/sponsors/lukechilds)
-[![Bitcoin Donate](https://badgen.net/badge/Bitcoin/Donate/F19537?icon=bitcoin)](https://lu.ke/tip/bitcoin)
-[![Lightning Donate](https://badgen.net/badge/Lightning/Donate/F6BC41?icon=bitcoin-lightning)](https://lu.ke/tip/lightning)
+> Run an Electrum BGL server with one command
 
-> Run an Electrum server with one command
-
-An easily configurable Docker image for running an Electrum server.
+An easily configurable Docker image for running an Electrum server for Bitgesell Blockchain Network.
 
 ## Usage
 
