@@ -1,6 +1,8 @@
 
 # docker-electrumx-bgl
 
+<img src="Icon.png" style="height: 60px;" />
+
 > Run an Electrum BGL server with one command
 
 An easily configurable Docker image for running an Electrum server for Bitgesell Blockchain Network.
@@ -11,9 +13,9 @@ An easily configurable Docker image for running an Electrum server for Bitgesell
 docker run \
   -v /home/username/electrumx:/data \
   -e DAEMON_URL=http://user:pass@host:port \
-  -e COIN=BitcoinSegwit \
+  -e COIN=Bitgesell \
   -p 50002:50002 \
-  lukechilds/electrumx
+  naftalimurgor/electrumx-bgl
 ```
 
 If there's an SSL certificate/key (`electrumx.crt`/`electrumx.key`) in the `/data` volume it'll be used. If not, one will be generated for you.
