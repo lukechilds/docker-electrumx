@@ -8,7 +8,7 @@ ARG VERSION
 COPY ./bin /usr/local/bin
 
 RUN chmod a+x /usr/local/bin/* && \
-    apk add --no-cache git build-base openssl && \
+    apk add --no-cache git build-base leveldb-dev openssl && \
     git clone --depth 1 --branch $VERSION https://github.com/spesmilo/electrumx.git && \
     cd electrumx && \
     pip3 install . && \
