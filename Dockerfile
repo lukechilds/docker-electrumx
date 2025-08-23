@@ -8,11 +8,12 @@ ARG VERSION
 COPY ./bin /usr/local/bin
 
 RUN chmod a+x /usr/local/bin/* && \
+    apk add --no-cache git build-base openssl && \
     git clone -b $VERSION https://github.com/spesmilo/electrumx.git && \
     cd electrumx && \
     pip3 install . && \
+    apk del git build-base && \
     rm -rf /tmp/*
-
 VOLUME ["/data"]
 ENV HOME /data
 ENV ALLOW_ROOT 1
