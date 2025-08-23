@@ -50,7 +50,7 @@ docker run \
   -e DAEMON_URL=http://user:pass@host:port \
   -e COIN=BitcoinSegwit \
   -p 50002:50002 \
-  lukechilds/electrumx:v1.8.7
+  lukechilds/electrumx:v1.18.0
 ```
 
 ## License
