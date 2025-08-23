@@ -9,7 +9,7 @@ COPY ./bin /usr/local/bin
 
 RUN chmod a+x /usr/local/bin/* && \
     apk add --no-cache git build-base openssl && \
-    git clone -b $VERSION https://github.com/spesmilo/electrumx.git && \
+    git clone --depth 1 --branch $VERSION https://github.com/spesmilo/electrumx.git && \
     cd electrumx && \
     pip3 install . && \
     apk del git build-base && \
