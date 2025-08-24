@@ -11,8 +11,8 @@ RUN chmod a+x /usr/local/bin/* && \
     apk add --no-cache git build-base python3-dev leveldb-dev openssl && \
     git clone --depth 1 --branch $VERSION https://github.com/spesmilo/electrumx.git && \
     cd electrumx && \
-    pip install --no-binary :all: uvloop && \
-    pip install --no-binary :all: leveldb && \
+    pip install uvloop && \
+    pip install leveldb && \
     pip3 install . && \
     apk del git build-base && \
     rm -rf /tmp/*
