@@ -8,13 +8,13 @@ ARG VERSION
 COPY ./bin /usr/local/bin
 
 RUN chmod a+x /usr/local/bin/* && \
-    apk add --no-cache git build-base python3-dev leveldb-dev openssl && \
+    apk add --no-cache git build-base python3-dev leveldb leveldb-dev openssl && \
     git clone --depth 1 --branch $VERSION https://github.com/spesmilo/electrumx.git && \
     cd electrumx && \
     pip install uvloop && \
     pip install plyvel && \
     pip3 install . && \
-    apk del git build-base && \
+    apk del git build-base python3-dev && \
     rm -rf /tmp/*
 VOLUME ["/data"]
 ENV HOME=/data
