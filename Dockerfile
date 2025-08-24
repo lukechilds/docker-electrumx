@@ -1,4 +1,4 @@
-ARG VERSION=1.17.0
+ARG VERSION=1.18.0
 
 FROM debian:trixie-slim
 LABEL maintainer="Luke Childs <lukechilds123@gmail.com>"
