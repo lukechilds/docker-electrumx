@@ -18,6 +18,7 @@ RUN cd electrumx &&  python3 -m pip install --break-system-packages .
 VOLUME ["/data"]
 ENV HOME=/data
 ENV ALLOW_ROOT=1
+ENV COIN=Bitcoin
 ENV EVENT_LOOP_POLICY=uvloop
 ENV DB_DIRECTORY=/data
 ENV SERVICES=tcp://:50001,ssl://:50002,wss://:50004,rpc://0.0.0.0:8000
