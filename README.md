@@ -48,7 +48,7 @@ You can also run a specific version of ElectrumX if you want.
 docker run \
   -v /home/username/electrumx:/data \
   -e DAEMON_URL=http://user:pass@host:port \
-  -e COIN=BitcoinSegwit \
+  -e COIN=Bitcoin \
   -p 50002:50002 \
   lukechilds/electrumx:v1.18.0
 ```
