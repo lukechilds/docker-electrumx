@@ -1,4 +1,3 @@
-
 # docker-electrumx
 
 [![Build Status](https://travis-ci.org/lukechilds/docker-electrumx.svg?branch=master)](https://travis-ci.org/lukechilds/docker-electrumx)

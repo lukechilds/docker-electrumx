@@ -1,22 +1,19 @@
 ARG VERSION=1.16.0
 
-FROM python:3.7-alpine3.11
+FROM debian:trixie-slim
 LABEL maintainer="Luke Childs <lukechilds123@gmail.com>"
 
 ARG VERSION
 
 COPY ./bin /usr/local/bin
+RUN chmod a+x /usr/local/bin/*
 
-RUN chmod a+x /usr/local/bin/* && \
-    apk add --no-cache git build-base openssl && \
-    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.11/main leveldb-dev && \
-    apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing rocksdb-dev && \
-    pip install aiohttp pylru plyvel websockets python-rocksdb uvloop && \
-    git clone -b $VERSION https://github.com/spesmilo/electrumx.git && \
-    cd electrumx && \
-    python setup.py install && \
-    apk del git build-base && \
-    rm -rf /tmp/*
+RUN apt-get --yes update
+RUN apt-get --yes install python3-pip build-essential libc6-dev libncurses5-dev libncursesw5-dev libleveldb-dev git
+RUN pip3 install --break-system-packages plyvel uvloop
+
+RUN git clone -b $VERSION https://github.com/spesmilo/electrumx.git
+RUN cd electrumx &&  python3 -m pip install --break-system-packages .
 
 VOLUME ["/data"]
 ENV HOME /data
