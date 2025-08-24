@@ -12,7 +12,7 @@ RUN chmod a+x /usr/local/bin/* && \
     git clone --depth 1 --branch $VERSION https://github.com/spesmilo/electrumx.git && \
     cd electrumx && \
     pip install uvloop && \
-    pip install leveldb && \
+    pip install --no-binary :all: leveldb && \
     pip3 install . && \
     apk del git build-base && \
     rm -rf /tmp/*
