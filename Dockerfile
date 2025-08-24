@@ -14,7 +14,7 @@ RUN chmod a+x /usr/local/bin/* && \
     pip install uvloop && \
     pip install plyvel && \
     pip3 install . && \
-    apk del git build-base python3-dev && \
+    apk del git && \
     rm -rf /tmp/*
 VOLUME ["/data"]
 ENV HOME=/data
